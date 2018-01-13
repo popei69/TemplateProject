@@ -22,6 +22,7 @@ class CurrencyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        self.title = "Pound exchange"
         
         self.tableView.dataSource = self.dataSource
         self.dataSource.data.addAndNotify(observer: self) { [weak self] in
