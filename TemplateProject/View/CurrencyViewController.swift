@@ -24,6 +24,7 @@ class CurrencyViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         self.tableView.dataSource = self.dataSource
+        self.viewModel.fetchCurrencies()
     }
 
     override func didReceiveMemoryWarning() {

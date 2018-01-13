@@ -26,9 +26,9 @@ extension Converter : Parceable {
             
             var finalRates : [CurrencyRate] = []
             for (currencyIso, value) in rates {
-                if let currency = Currency(rawValue: currencyIso) {
-                    finalRates.append(CurrencyRate(currency: currency, rate: value))
-                }
+//                if let currency = Currency(rawValue: currencyIso) {
+                    finalRates.append(CurrencyRate(currency: currencyIso, rate: value))
+//                }
             }
             
             let conversion = Converter(base: currency, date: date, rates: finalRates)

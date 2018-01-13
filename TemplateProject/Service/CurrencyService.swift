@@ -12,21 +12,35 @@ final class CurrencyService : RequestHandler {
     
     static let shared = CurrencyService()
     
-    let endpoint = "http://api.fixer.io/latest?base=GBP"
+    let endpoint = "https://api.fixer.io/latest?base=GBP"
     
-    let numberFormatter = NumberFormatter()
+//    let numberFormatter = NumberFormatter()
     
-    var converter : Converter?
-    var currency = Currency.GBP 
+//    var converter : Converter?
+//    var currency = Currency.GBP 
+    
+    var task : URLSessionTask?
     
     private override init() {
         super.init()
         
-        numberFormatter.numberStyle = .currency
+//        numberFormatter.numberStyle = .currency
     }
     
-    func fetchConverter() {
-        let _ = RequestService().loadData(urlString: endpoint, completion: self.networkResult(completion: self.parser))
+    func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void)) {
+        
+        // cancel previous request if already in progress
+        self.cancelFetchCurrencies()
+        
+        task = RequestService().loadData(urlString: endpoint, completion: self.networkResult(completion: completion))
+    }
+    
+    func cancelFetchCurrencies() {
+        
+        if let task = task {
+            task.cancel()
+        }
+        task = nil
     }
     
 //    func convert(price: Price) -> Price {
@@ -48,24 +62,4 @@ final class CurrencyService : RequestHandler {
 //        
 //        return price
 //    }
-    
-    var parser : ((Result<Converter, ErrorResult>) -> Void) {
-        return { postsResult in 
-            
-            DispatchQueue.main.async {
-                switch postsResult {
-                case .success(let converter) :
-                    // reload data
-                    print("Parser success \(converter)")
-                    self.converter = converter
-                    break
-                case .failure(let error) :
-                    print("Parser error \(error)")
-                    self.converter = nil
-                    break
-                }
-            }
-            
-        }
-    }
 }
