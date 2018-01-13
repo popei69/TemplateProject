@@ -24,6 +24,10 @@ class CurrencyViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         self.tableView.dataSource = self.dataSource
+        self.dataSource.data.addAndNotify(observer: self) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        
         self.viewModel.fetchCurrencies()
     }
 
@@ -34,7 +38,7 @@ class CurrencyViewController: UIViewController {
 }
 
 class GenericDataSource<T> : NSObject {
-    var data: [T] = []
+    var data: DynamicValue<[T]> = DynamicValue([])
 }
 
 class CurrencyDataSource : GenericDataSource<CurrencyRate>, UITableViewDataSource {
@@ -44,10 +48,16 @@ class CurrencyDataSource : GenericDataSource<CurrencyRate>, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
+        return data.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CurrencyCell", for: indexPath) as! CurrencyCell
+        
+        let currencyRate = self.data.value[indexPath.row]
+        cell.currencyRate = currencyRate
+        
+        return cell
     }
 }

@@ -32,7 +32,7 @@ struct CurrencyViewModel {
                     // reload data
                     print("Parser success \(converter)")
 //                    self.converter = converter
-                    self.dataSource?.data = converter.rates
+                    self.dataSource?.data.value = converter.rates
                     
                     break
                 case .failure(let error) :

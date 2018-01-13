@@ -13,6 +13,7 @@
 		142350E32009668500930F1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 142350E22009668500930F1D /* Assets.xcassets */; };
 		142350E62009668500930F1D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 142350E42009668500930F1D /* LaunchScreen.storyboard */; };
 		142350F12009668500930F1D /* TemplateProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142350F02009668500930F1D /* TemplateProjectTests.swift */; };
+		1456E4B5200A7F2200DCF2AF /* DynamicValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1456E4B4200A7F2200DCF2AF /* DynamicValue.swift */; };
 		14917E0C200A489A00234393 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14917E0B200A489A00234393 /* Result.swift */; };
 		14917E0E200A48AB00234393 /* ErrorResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14917E0D200A48AB00234393 /* ErrorResult.swift */; };
 		14917E11200A491C00234393 /* RequestFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14917E10200A491C00234393 /* RequestFactory.swift */; };
@@ -48,6 +49,7 @@
 		142350EC2009668500930F1D /* TemplateProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TemplateProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		142350F02009668500930F1D /* TemplateProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemplateProjectTests.swift; sourceTree = "<group>"; };
 		142350F22009668500930F1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1456E4B4200A7F2200DCF2AF /* DynamicValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicValue.swift; sourceTree = "<group>"; };
 		14917E0B200A489A00234393 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		14917E0D200A48AB00234393 /* ErrorResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorResult.swift; sourceTree = "<group>"; };
 		14917E10200A491C00234393 /* RequestFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestFactory.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 			children = (
 				14917E13200A4ECD00234393 /* Currency.swift */,
 				14917E1C200A528400234393 /* Converter.swift */,
+				1456E4B4200A7F2200DCF2AF /* DynamicValue.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -306,6 +309,7 @@
 				14917E0C200A489A00234393 /* Result.swift in Sources */,
 				14917E11200A491C00234393 /* RequestFactory.swift in Sources */,
 				14917E1D200A528400234393 /* Converter.swift in Sources */,
+				1456E4B5200A7F2200DCF2AF /* DynamicValue.swift in Sources */,
 				14917E27200A53CD00234393 /* RequestService.swift in Sources */,
 				14917E17200A4F4600234393 /* CurrencyViewModel.swift in Sources */,
 				14917E1B200A523E00234393 /* RequestHandler.swift in Sources */,

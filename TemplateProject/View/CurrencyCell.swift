@@ -13,6 +13,18 @@ class CurrencyCell: UITableViewCell {
     @IBOutlet weak var currencyLabel: UILabel!
     @IBOutlet weak var rateLabel: UILabel!
     
+    var currencyRate : CurrencyRate? {
+        didSet {
+            
+            guard let currencyRate = currencyRate else {
+                return
+            }
+            
+            rateLabel.text = "\(currencyRate.rate)"
+            currencyLabel.text = currencyRate.currency
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

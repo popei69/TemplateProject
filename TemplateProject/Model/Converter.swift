@@ -24,13 +24,7 @@ extension Converter : Parceable {
             let date = dictionary["date"] as? String,
             let rates = dictionary["rates"] as? [String: Double] {
             
-            var finalRates : [CurrencyRate] = []
-            for (currencyIso, value) in rates {
-//                if let currency = Currency(rawValue: currencyIso) {
-                    finalRates.append(CurrencyRate(currency: currencyIso, rate: value))
-//                }
-            }
-            
+            let finalRates : [CurrencyRate] = rates.flatMap({ CurrencyRate(currency: $0.key, rate: $0.value) })
             let conversion = Converter(base: currency, date: date, rates: finalRates)
             
             return Result.success(conversion)
