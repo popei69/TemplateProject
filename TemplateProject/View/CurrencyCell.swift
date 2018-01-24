@@ -21,7 +21,7 @@ class CurrencyCell: UITableViewCell {
             }
             
             rateLabel.text = "\(currencyRate.rate)"
-            currencyLabel.text = currencyRate.currency
+            currencyLabel.text = currencyRate.currencyIso
         }
     }
     

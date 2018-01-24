@@ -21,6 +21,6 @@ enum CurrencyLocale : String {
 
 struct CurrencyRate {
     
-    let currency : String //Currency
+    let currencyIso : String
     let rate : Double
 }
