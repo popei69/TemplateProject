@@ -8,7 +8,11 @@
 
 import Foundation
 
-final class CurrencyService : RequestHandler {
+protocol CurrencyServiceProtocol : class {
+    func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void))
+}
+
+final class CurrencyService : RequestHandler, CurrencyServiceProtocol {
     
     static let shared = CurrencyService()
     
