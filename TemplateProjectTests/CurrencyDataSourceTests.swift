@@ -52,7 +52,7 @@ class CurrencyDataSourceTests: XCTestCase {
         XCTAssertEqual(dataSource.numberOfSections(in: tableView), 1, "Expected one section in table view")
         
         // expected two cells
-        XCTAssertEqual(dataSource.tableView(tableView, numberOfRowsInSection: 0), 2, "Expected no cell in table view")
+        XCTAssertEqual(dataSource.tableView(tableView, numberOfRowsInSection: 0), 2, "Expected two cell in table view")
     }
     
     func testValueCell() {
