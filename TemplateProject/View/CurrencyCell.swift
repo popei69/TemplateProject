@@ -20,8 +20,8 @@ class CurrencyCell: UITableViewCell {
                 return
             }
             
-            rateLabel.text = "\(currencyRate.rate)"
-            currencyLabel.text = currencyRate.currencyIso
+            rateLabel?.text = "\(currencyRate.rate)"
+            currencyLabel?.text = currencyRate.currencyIso
         }
     }
     
