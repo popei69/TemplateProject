@@ -8,8 +8,10 @@
 
 import Foundation
 
-typealias CompletionHandler = (() -> Void)
+
 class DynamicValue<T> {
+    
+    typealias CompletionHandler = ((T) -> Void)
     
     var value : T {
         didSet {
@@ -33,7 +35,7 @@ class DynamicValue<T> {
     }
     
     private func notify() {
-        observers.forEach({ $0.value() })
+        observers.forEach({ $0.value(value) })
     }
     
     deinit {
