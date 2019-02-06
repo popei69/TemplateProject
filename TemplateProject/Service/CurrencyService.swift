@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import RxSwift
 
 protocol CurrencyServiceProtocol : class {
     func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void))
+}
+
+protocol CurrencyServiceObservable : class {
+    func fetchConverter() -> Observable<Converter>
 }
 
 final class CurrencyService : RequestHandler, CurrencyServiceProtocol {

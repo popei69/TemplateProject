@@ -7,35 +7,20 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 struct CurrencyViewModel {
     
-    weak var dataSource : GenericDataSource<CurrencyRate>?
-    weak var service: CurrencyServiceProtocol?
+    weak var service: CurrencyServiceObservable?
     
-    var onErrorHandling : ((ErrorResult?) -> Void)?
+    // outputs
+    let rates : Observable<[CurrencyRate]>
     
-    init(service: CurrencyServiceProtocol = FileDataService.shared, dataSource : GenericDataSource<CurrencyRate>?) {
-        self.dataSource = dataSource
+    init(service: CurrencyServiceObservable = FileDataService.shared) {
         self.service = service
-    }
-    
-    func fetchCurrencies() {
         
-        guard let service = service else {
-            onErrorHandling?(ErrorResult.custom(string: "Missing service"))
-            return
-        }
-        
-        service.fetchConverter { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let converter) :
-                    self.dataSource?.data.value = converter.rates
-                case .failure(let error) :
-                    self.onErrorHandling?(error)
-                }
-            }
-        }
+        rates = service.fetchConverter()
+            .map({ $0.rates })
     }
 }
