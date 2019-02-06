@@ -31,50 +31,53 @@ class CurrencyViewModelTests: XCTestCase {
     
     func testFetchWithNoService() {
         
+        let expectation = XCTestExpectation(description: "No service currency")
+        
         // giving no service to a view model
         viewModel.service = nil
         
         // expected to not be able to fetch currencies
-        viewModel.fetchCurrencies { result in
-            switch result {
-            case .success(_) :
-                XCTAssert(false, "ViewModel should not be able to fetch without service")
-            default:
-                break
-            }
+        viewModel.onErrorHandling = { error in 
+            expectation.fulfill()
         }
+        
+        viewModel.fetchCurrencies()
+        wait(for: [expectation], timeout: 5.0)
     }
     
     func testFetchCurrencies() {
         
+        let expectation = XCTestExpectation(description: "Currency fetch")
+        
         // giving a service mocking currencies
         service.converter = Converter(base: "GBP", date: "01-01-2018", rates: [])
         
-        // expected completion to succeed
-        viewModel.fetchCurrencies { result in
-            switch result {
-            case .failure(_) :
-                XCTAssert(false, "ViewModel should not be able to fetch without service")
-            default:
-                break
-            }
+        viewModel.onErrorHandling = { _ in
+            XCTAssert(false, "ViewModel should not be able to fetch without service")
         }
+        
+        dataSource.data.addObserver(self) { _ in
+            expectation.fulfill()
+        }
+        
+        viewModel.fetchCurrencies()
+        wait(for: [expectation], timeout: 5.0)
     }
     
     func testFetchNoCurrencies() {
+        
+        let expectation = XCTestExpectation(description: "No currency")
         
         // giving a service mocking error during fetching currencies
         service.converter = nil
         
         // expected completion to fail
-        viewModel.fetchCurrencies { result in
-            switch result {
-            case .success(_) :
-                XCTAssert(false, "ViewModel should not be able to fetch ")
-            default:
-                break
-            }
+        viewModel.onErrorHandling = { error in 
+            expectation.fulfill()
         }
+        
+        viewModel.fetchCurrencies()
+        wait(for: [expectation], timeout: 5.0)
     }
 }
 
