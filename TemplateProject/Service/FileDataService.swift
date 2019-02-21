@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 final class FileDataService : CurrencyServiceProtocol {
     
@@ -24,6 +25,18 @@ final class FileDataService : CurrencyServiceProtocol {
     }
 } 
 
+extension FileDataService : CurrencyServiceObservable {
+    
+    func fetchConverter() -> Observable<Converter> {
+        
+        // giving a sample json file
+        guard let data = FileManager.readJson(forResource: "sample") else {
+            return Observable.error(ErrorResult.custom(string: "No file or data"))
+        }
+        
+        return ParserHelper.parse(data: data)
+    }
+}
 
 extension FileManager {
     
