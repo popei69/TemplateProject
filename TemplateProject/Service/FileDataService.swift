@@ -10,6 +10,8 @@ import Foundation
 
 final class FileDataService : CurrencyServiceProtocol {
     
+    static let shared = FileDataService()
+    
     func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void)) {
         
         // giving a sample json file
