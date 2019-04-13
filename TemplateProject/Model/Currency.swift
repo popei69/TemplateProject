@@ -19,8 +19,13 @@ enum CurrencyLocale : String {
     case GBP = "en_UK"
 }
 
-struct CurrencyRate {
+struct CurrencyRate: Equatable {
     
     let currencyIso : String
     let rate : Double
+    
+    public static func == (lhs: CurrencyRate, rhs: CurrencyRate) -> Bool {
+        return lhs.rate == rhs.rate &&
+            lhs.currencyIso == rhs.currencyIso
+    }
 }

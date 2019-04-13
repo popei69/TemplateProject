@@ -27,22 +27,25 @@ class CurrencyViewController: UIViewController {
     private func bindViews() {
     
         // bind data to tableview
-        self.viewModel.rates
-            .subscribeOn(MainScheduler.instance)
-            .catchError { [weak self] error -> Observable<[CurrencyRate]> in
-                self?.showError(error as? ErrorResult)
-                return Observable.empty()
-            }
-            .bind(to: self.tableView.rx.items(cellIdentifier: "CurrencyCell", cellType: CurrencyCell.self)) { (row, currencyRate, cell) in
-                
+        self.viewModel.output.rates
+            .drive(self.tableView.rx.items(cellIdentifier: "CurrencyCell", cellType: CurrencyCell.self)) { (row, currencyRate, cell) in
                 cell.currencyRate = currencyRate
             }
             .disposed(by: disposeBag) 
+        
+        self.viewModel.output.errorMessage
+            .drive(onNext: { [weak self] errorMessage in
+                guard let strongSelf = self else { return }
+                strongSelf.showError(errorMessage)
+            })
+            .disposed(by: disposeBag)
+        
+        self.viewModel.input.reload.accept(())
     }
     
     // MARK: - UI
     
-    private func showError(_ error: ErrorResult?) {
+    private func showError(_ errorMessage: String) {
         
         // display error ?
         let controller = UIAlertController(title: "An error occured", message: "Oops, something went wrong!", preferredStyle: .alert)
