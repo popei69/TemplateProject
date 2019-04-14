@@ -34,7 +34,7 @@ class CurrencyViewModelTests: XCTestCase {
         super.tearDown()
     }
     
-    func testFetchWithNoCurrency() {
+    func testFetchWithError() {
         
         // create scheduler
         let rates = scheduler.createObserver([CurrencyRate].self)
@@ -43,12 +43,32 @@ class CurrencyViewModelTests: XCTestCase {
         // giving a service with no currencies
         service.converter = nil
         
+        viewModel.output.errorMessage
+            .drive(errorMessage)
+            .disposed(by: disposeBag)
+        
         viewModel.output.rates
             .drive(rates)
             .disposed(by: disposeBag)
         
-        viewModel.output.errorMessage
-            .drive(errorMessage)
+        scheduler.createColdObservable([.next(10, ())])
+            .bind(to: viewModel.input.reload)
+            .disposed(by: disposeBag)
+        scheduler.start()
+        
+        XCTAssertEqual(errorMessage.events, [.next(10, "No converter")])
+    }
+    
+    func testFetchWithNoCurrency() {
+        
+        // create scheduler
+        let rates = scheduler.createObserver([CurrencyRate].self)
+        
+        // giving a service with no currencies
+        service.converter = nil
+        
+        viewModel.output.rates
+            .drive(rates)
             .disposed(by: disposeBag)
         
         scheduler.createColdObservable([.next(10, ())])
@@ -57,7 +77,6 @@ class CurrencyViewModelTests: XCTestCase {
         scheduler.start()
         
         XCTAssertEqual(rates.events, [.next(10, []), .completed(10)])
-        XCTAssertEqual(errorMessage.events, [.next(10, "No converter")])
     }
     
     func testFetchCurrencies() {
