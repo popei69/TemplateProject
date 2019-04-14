@@ -94,13 +94,13 @@ class CurrencyViewModelTests: XCTestCase {
             .disposed(by: disposeBag)
         
         // mock a reload
-        scheduler.createColdObservable([.next(10, ())])
+        scheduler.createColdObservable([.next(10, ()), .next(30, ())])
             .bind(to: viewModel.input.reload)
             .disposed(by: disposeBag)
         
         scheduler.start()
         
-        XCTAssertEqual(rates.events, [.next(10, expectedRates)])
+        XCTAssertEqual(rates.events, [.next(10, expectedRates), .next(30, expectedRates)])
     }
 }
 
