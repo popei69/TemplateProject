@@ -7,81 +7,104 @@
 //
 
 import XCTest
+import RxSwift
+import RxTest
+import RxBlocking
 @testable import TemplateProject
 
 class CurrencyViewModelTests: XCTestCase {
     
     var viewModel : CurrencyViewModel!
-    var dataSource : GenericDataSource<CurrencyRate>!
+    var scheduler: TestScheduler!
+    var disposeBag: DisposeBag!
+    
     fileprivate var service : MockCurrencyService!
     
     override func setUp() {
         super.setUp()
+        self.scheduler = TestScheduler(initialClock: 0)
+        self.disposeBag = DisposeBag()
         self.service = MockCurrencyService()
-        self.dataSource = GenericDataSource<CurrencyRate>()
-        self.viewModel = CurrencyViewModel(service: service, dataSource: dataSource)
+        self.viewModel = CurrencyViewModel(service: service)
     }
     
     override func tearDown() {
         self.viewModel = nil
-        self.dataSource = nil
         self.service = nil
         super.tearDown()
     }
     
-    func testFetchWithNoService() {
+    func testFetchWithError() {
         
-        let expectation = XCTestExpectation(description: "No service currency")
+        // create scheduler
+        let rates = scheduler.createObserver([CurrencyRate].self)
+        let errorMessage = scheduler.createObserver(String.self)
         
-        // giving no service to a view model
-        viewModel.service = nil
+        // giving a service with no currencies
+        service.converter = nil
         
-        // expected to not be able to fetch currencies
-        viewModel.onErrorHandling = { error in 
-            expectation.fulfill()
-        }
+        viewModel.output.errorMessage
+            .drive(errorMessage)
+            .disposed(by: disposeBag)
         
-        viewModel.fetchCurrencies()
-        wait(for: [expectation], timeout: 5.0)
+        viewModel.output.rates
+            .drive(rates)
+            .disposed(by: disposeBag)
+        
+        scheduler.createColdObservable([.next(10, ())])
+            .bind(to: viewModel.input.reload)
+            .disposed(by: disposeBag)
+        scheduler.start()
+        
+        XCTAssertEqual(errorMessage.events, [.next(10, "No converter")])
+    }
+    
+    func testFetchWithNoCurrency() {
+        
+        // create scheduler
+        let rates = scheduler.createObserver([CurrencyRate].self)
+        
+        // giving a service with no currencies
+        service.converter = nil
+        
+        viewModel.output.rates
+            .drive(rates)
+            .disposed(by: disposeBag)
+        
+        scheduler.createColdObservable([.next(10, ())])
+            .bind(to: viewModel.input.reload)
+            .disposed(by: disposeBag)
+        scheduler.start()
+        
+        XCTAssertEqual(rates.events, [.next(10, []), .completed(10)])
     }
     
     func testFetchCurrencies() {
         
-        let expectation = XCTestExpectation(description: "Currency fetch")
+        // create scheduler
+        let rates = scheduler.createObserver([CurrencyRate].self)
         
         // giving a service mocking currencies
-        service.converter = Converter(base: "GBP", date: "01-01-2018", rates: [])
+        let expectedRates: [CurrencyRate] = [CurrencyRate(currencyIso: "USD", rate: 1.4)]
+        service.converter = Converter(base: "GBP", date: "01-01-2018", rates: expectedRates)
+
+        // bind the result
+        viewModel.output.rates
+            .drive(rates)
+            .disposed(by: disposeBag)
         
-        viewModel.onErrorHandling = { _ in
-            XCTAssert(false, "ViewModel should not be able to fetch without service")
-        }
+        // mock a reload
+        scheduler.createColdObservable([.next(10, ()), .next(30, ())])
+            .bind(to: viewModel.input.reload)
+            .disposed(by: disposeBag)
         
-        dataSource.data.addObserver(self) { _ in
-            expectation.fulfill()
-        }
+        scheduler.start()
         
-        viewModel.fetchCurrencies()
-        wait(for: [expectation], timeout: 5.0)
-    }
-    
-    func testFetchNoCurrencies() {
-        
-        let expectation = XCTestExpectation(description: "No currency")
-        
-        // giving a service mocking error during fetching currencies
-        service.converter = nil
-        
-        // expected completion to fail
-        viewModel.onErrorHandling = { error in 
-            expectation.fulfill()
-        }
-        
-        viewModel.fetchCurrencies()
-        wait(for: [expectation], timeout: 5.0)
+        XCTAssertEqual(rates.events, [.next(10, expectedRates), .next(30, expectedRates)])
     }
 }
 
-fileprivate class MockCurrencyService : CurrencyServiceProtocol {
+fileprivate class MockCurrencyService: CurrencyServiceProtocol, CurrencyServiceObservable {
     
     var converter : Converter?
 
@@ -93,5 +116,12 @@ fileprivate class MockCurrencyService : CurrencyServiceProtocol {
             completion(Result.failure(ErrorResult.custom(string: "No converter")))
         }
     }
+    
+    func fetchConverter() -> Observable<Converter> {
+        if let converter = converter {
+            return Observable.just(converter)
+        } else {
+            return Observable.error(ErrorResult.custom(string: "No converter"))
+        }
+    }
 }
-
