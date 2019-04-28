@@ -1,0 +1,4 @@
+module CCryptoOpenSSL {
+    umbrella "/Users/benoit/development/swift/TemplateProject/TemplateProjectServer/.build/checkouts/crypto.git--8435657232300914147/Sources/CCryptoOpenSSL/include"
+    export *
+}

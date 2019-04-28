@@ -1,0 +1,4 @@
+module CNIOOpenSSL {
+    umbrella "/Users/benoit/development/swift/TemplateProject/TemplateProjectServer/.build/checkouts/swift-nio-ssl.git--5699975128722789806/Sources/CNIOOpenSSL/include"
+    export *
+}

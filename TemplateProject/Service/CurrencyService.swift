@@ -16,7 +16,14 @@ final class CurrencyService : RequestHandler, CurrencyServiceProtocol {
     
     static let shared = CurrencyService()
     
-    let endpoint = "https://api.fixer.io/latest?base=GBP"
+    var baseUrl: String {
+        return ProcessInfo.processInfo.environment["BASEURL"] ?? "https://api.exchangeratesapi.io"
+    }
+    
+    var endpoint: String {
+        return baseUrl + "/latest?base=GBP"
+    }
+    
     var task : URLSessionTask?
     
     func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void)) {

@@ -22,6 +22,7 @@ class CurrencyCell: UITableViewCell {
             
             rateLabel?.text = "\(currencyRate.rate)"
             currencyLabel?.text = currencyRate.currencyIso
+            accessibilityIdentifier = "CurrencyCell"
         }
     }
     

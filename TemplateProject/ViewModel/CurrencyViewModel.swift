@@ -15,7 +15,7 @@ struct CurrencyViewModel {
     
     var onErrorHandling : ((ErrorResult?) -> Void)?
     
-    init(service: CurrencyServiceProtocol = FileDataService.shared, dataSource : GenericDataSource<CurrencyRate>?) {
+    init(service: CurrencyServiceProtocol = CurrencyService.shared, dataSource : GenericDataSource<CurrencyRate>?) {
         self.dataSource = dataSource
         self.service = service
     }
