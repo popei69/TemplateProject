@@ -7,4 +7,6 @@ I recently added unit testing for a MVVM architecture: https://benoitpasquier.co
 
 A RxSwift version is available under `rxswift` branch: https://benoitpasquier.com/integrate-rxswift-in-mvvm/
 
+A Combine version is available under `combine` branch: https://benoitpasquier.com/migrating-mvvm-uikit-rxswift-to-combine/
+
 ![iOS MVVM Pattern](https://benoitpasquier.com/images/2018/01/ios-swift-mvvm-pattern-sample.png)
