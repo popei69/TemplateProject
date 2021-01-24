@@ -16,19 +16,15 @@ struct Converter {
     let rates : [CurrencyRate]
 }
 
-extension Converter : Parceable {
+extension Converter: Codable {
     
-    static func parseObject(dictionary: [String : AnyObject]) -> Result<Converter, ErrorResult> {
-        if let base = dictionary["base"] as? String,
-            let date = dictionary["date"] as? String,
-            let rates = dictionary["rates"] as? [String: Double] {
-            
-            let finalRates : [CurrencyRate] = rates.flatMap({ CurrencyRate(currencyIso: $0.key, rate: $0.value) })
-            let conversion = Converter(base: base, date: date, rates: finalRates)
-            
-            return Result.success(conversion)
-        } else {
-            return Result.failure(ErrorResult.parser(string: "Unable to parse conversion rate"))
-        }
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.base = try container.decode(String.self, forKey: .base)
+        self.date = try container.decode(String.self, forKey: .date)
+        
+        self.rates = try container.decode([String: Double].self, forKey: .rates)
+            .compactMap { CurrencyRate(currencyIso: $0.key, rate: $0.value) }
     }
 }

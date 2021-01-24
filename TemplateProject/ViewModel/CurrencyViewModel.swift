@@ -7,43 +7,37 @@
 //
 
 import Foundation
-import RxSwift
-import RxCocoa
+import Combine
 
-struct CurrencyViewModel {
+class CurrencyViewModel {
     
-    weak var service: CurrencyServiceObservable?
-
-    let input: Input
-    let output: Output
+    weak private var service: CurrencyServicePublisher?
+    let reload: PassthroughSubject<Void, Never>
     
-    struct Input {
-        let reload: PublishRelay<Void>
-    }
+    @Published private(set) var rates: [CurrencyRate]
+    @Published private(set) var errorMessage: String?
     
-    struct Output {
-        let rates: Driver<[CurrencyRate]>
-        let errorMessage: Driver<String>
-    }
-    
-    init(service: CurrencyServiceObservable = FileDataService.shared) {
+    init(service: CurrencyServicePublisher = FileDataService()) {
         self.service = service
         
-        let errorRelay = PublishRelay<String>()
-        let reloadRelay = PublishRelay<Void>()
+        rates = []
+        reload = PassthroughSubject<Void, Never>()
         
-        let rates = reloadRelay
-            .asObservable()
-            .flatMapLatest({ service.fetchConverter() })
-            .map({ $0.rates })
-            .asDriver { (error) -> Driver<[CurrencyRate]> in
-                errorRelay.accept((error as? ErrorResult)?.localizedDescription ?? error.localizedDescription)
-                return Driver.just([])
-            }
-        
-        
-        self.input = Input(reload: reloadRelay)
-        self.output = Output(rates: rates, 
-                             errorMessage: errorRelay.asDriver(onErrorJustReturn: "An error happened"))
+        bindReloadToFetchConverter()
+    }
+    
+    func bindReloadToFetchConverter() {
+        reload.compactMap { [weak self] _ in 
+            self?.service?.fetchConverter()
+        }
+        .switchToLatest()
+        .subscribe(on: RunLoop.main)
+        .map(\.rates)
+        .catch({ [weak self] error -> Just<[CurrencyRate]> in
+            print("Error", error)
+            self?.errorMessage = (error as? ErrorResult)?.localizedDescription ?? error.localizedDescription
+            return Just([CurrencyRate]())
+        })
+        .assign(to: &$rates)
     }
 }

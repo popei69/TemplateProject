@@ -1,0 +1,6 @@
+framework module CombineDataSources {
+  umbrella header "CombineDataSources-umbrella.h"
+
+  export *
+  module * { export * }
+}

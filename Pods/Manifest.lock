@@ -1,37 +1,16 @@
 PODS:
-  - RxAtomic (4.4.2)
-  - RxBlocking (4.4.2):
-    - RxAtomic (>= 4.4.2, ~> 4.4)
-    - RxSwift (>= 4.4.2, ~> 4.4)
-  - RxCocoa (4.4.2):
-    - RxSwift (>= 4.4.2, ~> 4.4)
-  - RxSwift (4.4.2):
-    - RxAtomic (>= 4.4.2, ~> 4.4)
-  - RxTest (4.4.2):
-    - RxAtomic (>= 4.4.2, ~> 4.4)
-    - RxSwift (>= 4.4.2, ~> 4.4)
+  - CombineDataSources (0.2.5)
 
 DEPENDENCIES:
-  - RxBlocking (~> 4.4)
-  - RxCocoa (~> 4.4)
-  - RxSwift (~> 4.4)
-  - RxTest (~> 4.4)
+  - CombineDataSources
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - RxAtomic
-    - RxBlocking
-    - RxCocoa
-    - RxSwift
-    - RxTest
+    - CombineDataSources
 
 SPEC CHECKSUMS:
-  RxAtomic: d00e97c10db88c6f08540e0bf2752fc5a2404167
-  RxBlocking: e96fdda1473d81332a6ed2cface935dc2167a122
-  RxCocoa: 477990dc3b4c3ff55fb0ac77e1cc06244e0aaec8
-  RxSwift: 74c29b693c8e42b0f64400e8b06564575742d649
-  RxTest: 6433d5b6229f5de424fa534bc22b5e6c38b0b671
+  CombineDataSources: dcbc3b06a038ffdf620b3b4533d3ecaf76ca6a2e
 
-PODFILE CHECKSUM: d551a75c6efc4ebba9eea4b19eff5d17c8ddb31c
+PODFILE CHECKSUM: 6b7d4fdae819657f6c12816e6cd60b0d4b944011
 
-COCOAPODS: 1.6.0
+COCOAPODS: 1.7.5

@@ -6,15 +6,5 @@ target 'TemplateProject' do
   use_frameworks!
 
   # Pods for TemplateProject
-  pod 'RxSwift',    '~> 4.4'
-  pod 'RxCocoa',    '~> 4.4'
-
-  target 'TemplateProjectTests' do
-    inherit! :search_paths
-    
-    # Pods for testing
-    pod 'RxBlocking', '~> 4.4'
-    pod 'RxTest',     '~> 4.4'
-  end
-
+  pod 'CombineDataSources'
 end

@@ -7,34 +7,24 @@
 //
 
 import Foundation
-import RxSwift
+import Combine
 
-final class FileDataService : CurrencyServiceProtocol {
-    
-    static let shared = FileDataService()
-    
-    func fetchConverter(_ completion: @escaping ((Result<Converter, ErrorResult>) -> Void)) {
-        
+final class FileDataService : CurrencyServicePublisher {
+    func fetchConverter() -> AnyPublisher<Converter, ErrorResult> {
         // giving a sample json file
         guard let data = FileManager.readJson(forResource: "sample") else {
-            completion(Result.failure(ErrorResult.custom(string: "No file or data")))
-            return
+            return Fail(outputType: Converter.self, 
+                        failure: ErrorResult.custom(string: "No file or data")
+                )
+                .eraseToAnyPublisher()
         }
-        
-        ParserHelper.parse(data: data, completion: completion)
-    }
-} 
 
-extension FileDataService : CurrencyServiceObservable {
-    
-    func fetchConverter() -> Observable<Converter> {
-        
-        // giving a sample json file
-        guard let data = FileManager.readJson(forResource: "sample") else {
-            return Observable.error(ErrorResult.custom(string: "No file or data"))
-        }
-        
-        return ParserHelper.parse(data: data)
+        return Just(data)
+            .decode(type: Converter.self, decoder: JSONDecoder())
+            .mapError { error in 
+                ErrorResult.parser(string: "Unable to parse data")
+            }
+            .eraseToAnyPublisher()
     }
 }
 

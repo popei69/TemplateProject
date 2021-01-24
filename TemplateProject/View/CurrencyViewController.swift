@@ -7,47 +7,47 @@
 //
 
 import UIKit
-import RxSwift
-import RxCocoa
+import Combine
+import CombineDataSources
 
 class CurrencyViewController: UIViewController {
     
     @IBOutlet weak var tableView : UITableView! 
     
     let viewModel = CurrencyViewModel()
-    private let disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.title = "£ Exchange rate"
         self.bindViews()
+        
+        viewModel.reload.send(())
     }
     
     private func bindViews() {
-    
-        // bind data to tableview
-        self.viewModel.output.rates
-            .drive(self.tableView.rx.items(cellIdentifier: "CurrencyCell", cellType: CurrencyCell.self)) { (row, currencyRate, cell) in
+        viewModel.$rates
+            .bind(subscriber: self.tableView.rowsSubscriber(cellIdentifier: "CurrencyCell", cellType: CurrencyCell.self, cellConfig: { (cell, indexPath, currencyRate) in
                 cell.currencyRate = currencyRate
+            }))
+            .store(in: &cancellables)
+        
+        viewModel.$errorMessage
+            .sink { [weak self] message in 
+                self?.showError(message)
             }
-            .disposed(by: disposeBag) 
-        
-        self.viewModel.output.errorMessage
-            .drive(onNext: { [weak self] errorMessage in
-                guard let strongSelf = self else { return }
-                strongSelf.showError(errorMessage)
-            })
-            .disposed(by: disposeBag)
-        
-        self.viewModel.input.reload.accept(())
+            .store(in: &cancellables)
     }
     
-    // MARK: - UI
+    // MARK: - Error handler
     
-    private func showError(_ errorMessage: String) {
+    private func showError(_ errorMessage: String?) {
+        guard errorMessage?.isEmpty == false else { 
+            return
+        }
         
-        // display error ?
+        // display error
         let controller = UIAlertController(title: "An error occured", message: "Oops, something went wrong!", preferredStyle: .alert)
         controller.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
         self.present(controller, animated: true, completion: nil)
