@@ -4,7 +4,7 @@ An iOS template project implementing MVVM pattern in Swift around a currency exc
 * Step by step blog post: https://benoitpasquier.com/ios-swift-mvvm-pattern/
 * RxSwift: https://benoitpasquier.com/integrate-rxswift-in-mvvm/
 * SwiftUI + Combine version: https://benoitpasquier.com/swiftui-what-has-changed-in-mvvm-pattern-swift/
-* Combine: https://benoitpasquier/migrating-mvvm-uikit-rxswift-to-combine/
+* Combine: https://benoitpasquier.com/migrating-mvvm-uikit-rxswift-to-combine/
 
 _Like this project? Feel free to follow me on [Twitter](https://twitter.com/benoitpasquier_) to get the latest update._
 
